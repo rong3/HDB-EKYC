@@ -47,14 +47,13 @@ function Default({ Component, pageProps }) {
 
   return (
     <ProvideAuth>
-      {/* <Script src="https://webrtc.github.io/adapter/adapter-latest.js" strategy="beforeInteractive" /> */}
+      <Script src="https://webrtc.github.io/adapter/adapter-latest.js" strategy="beforeInteractive" />
       <Script src="/jeelizFace/jeelizFaceFilter.js" strategy="beforeInteractive" />
       <Script src="/jeelizFace/helper/JeelizCanvas2DHelper.js" strategy="beforeInteractive" />
       <Script src="/jeelizFace/helper/JeelizResizer.js" strategy="beforeInteractive" />
       <Script src="/jeelizFace/helper/JeelizThreeHelper.js" strategy="beforeInteractive" />
       <Script src="/jeelizFace/libs/three/v112/three.js" strategy="beforeInteractive" />
       <Script src="/jeelizFace/helper/HeadControls.js" strategy="beforeInteractive" />
-      {/* <Script src="https://webrtc.github.io/adapter/adapter-latest.js" strategy="beforeInteractive" /> */}
       <AccessControlProvider>
         <I18nextProvider i18n={i18n}>
           <ToastProvider autoDismiss={true} autoDismissTimeout={2000} placement="bottom-right">

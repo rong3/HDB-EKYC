@@ -118,9 +118,6 @@ function WebCamDetectComponent(props) {
                         //init jeeliz
                         initServiceJeelize();
                         setLoading(false)
-                        setTimeout(() => {
-                            video.play()
-                        }, 5000);
                     })
                     .catch((err) => {
                         setLoading(false)
