@@ -91,7 +91,7 @@ function WebCamDetectComponent(props) {
         JEELIZFACEFILTER.get_videoDevices((data) => {
             const deviceid = data[0]?.deviceId ?? null;
             initHeadMotion('jeeFaceFilterCanvas', detectLeftRight, deviceid)
-            initThreejs(deviceid, threejsMaterial);
+           // initThreejs(deviceid, threejsMaterial);
         })
     }
 
@@ -116,7 +116,7 @@ function WebCamDetectComponent(props) {
                         //video.play()
                          faceDetection();
                         //init jeeliz
-                        //initServiceJeelize();
+                        initServiceJeelize();
                         setLoading(false)
                     })
                     .catch((err) => {
