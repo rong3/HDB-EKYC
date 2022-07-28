@@ -114,9 +114,9 @@ function WebCamDetectComponent(props) {
                         window.stream = currentStream;
                         video.srcObject = currentStream;
                         //video.play()
-                        faceDetection();
+                       // faceDetection();
                         //init jeeliz
-                        initServiceJeelize();
+                        //initServiceJeelize();
                         setLoading(false)
                     })
                     .catch((err) => {
@@ -352,7 +352,7 @@ function WebCamDetectComponent(props) {
             <div className='col-md-6'>
                 {/* //main camera */}
                 <div style={{ display: 'block', zIndex: '9', position: 'relative', width: '100%', borderRadius: '10px', objectFit: 'contain' }}>
-                    <video id="video" className='video-custom' ref={webcamRef} autoPlay={true} playsInline={true}></video>
+                    <video id="video" className='video-custom' ref={webcamRef} autoPlay={true} playsInline={true} muted={true}></video>
                     <div className="overlay-container" id="frame-video-main">
                         <canvas
                             id="canvas"
