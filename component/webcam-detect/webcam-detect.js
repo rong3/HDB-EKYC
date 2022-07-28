@@ -110,23 +110,14 @@ function WebCamDetectComponent(props) {
             })))?.then(() => {
                 navigator.mediaDevices.getUserMedia({ video: true, audio: false })
                     .then((currentStream) => {
-                        webcamRef.current.pause();
-                        webcamRef.current.setAttribute('playsinline', true);
-                        webcamRef.current.setAttribute('autoplay', true);
-                        webcamRef.current.muted = true;
-                        webcamRef.current.srcObject = currentStream;
-                        setTimeout(() => {
-                            webcamRef.current.play().then((res) => {
-                                setLoading(false)
-                                faceDetection();
-                                //init jeeliz
-                                initServiceJeelize();
-                            })
-                                .catch((err) => {
-                                    console.log("error playing", err);
-                                });
-                        }, 0);
-
+                        setLoading(false)
+                        const video = webcamRef.current;
+                        window.stream = currentStream; // make variable available to browser console
+                        video.srcObject = currentStream;
+                        video.play()
+                        faceDetection();
+                        //init jeeliz
+                        initServiceJeelize();
                     })
                     .catch((err) => {
                         setLoading(false)
@@ -361,7 +352,7 @@ function WebCamDetectComponent(props) {
             <div className='col-md-6'>
                 {/* //main camera */}
                 <div style={{ display: 'block', zIndex: '9', position: 'relative', width: '100%', borderRadius: '10px', objectFit: 'contain' }}>
-                    <video id="video" style={{ background: "#fff" }} className='video-custom' ref={webcamRef} autoplay muted playsinline src=""></video>
+                    <video id="video" style={{ background: "#fff" }} className='video-custom' ref={webcamRef} autoplay playsinline></video>
                     <div className="overlay-container" id="frame-video-main">
                         <canvas
                             id="canvas"
