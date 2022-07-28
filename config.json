@@ -1,0 +1,8 @@
+{
+    "region": "ap-southeast-1",
+    "mandatorySignIn": true,
+    "userPoolId": "ap-southeast-1_ELUawjj8s",
+    "userPoolWebClientId": "7h9hub4555kummt9bscvdqb2r8",
+    "authenticationFlowType": "1u8dehssc1lrrg1vm4ebeeqalgqtcdngti23a14ua2depqhd9ajc",
+    "dataApiEndpoint": "https://localhost:44322"
+}

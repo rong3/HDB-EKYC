@@ -1,0 +1,9 @@
+{
+    "menuhome": "Home",
+    "examplePage": {
+        "masterTitle": "Control & Grid Demo",
+        "gridA": {
+            "name": "Name"
+        }
+    }
+}

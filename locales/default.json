@@ -1,0 +1,9 @@
+{
+    "menuhome": "Trang chủ",
+    "examplePage":{
+        "masterTitle": "Trang mẫu sử dụng lưới và các trường nhập",
+        "gridA": {
+            "name": "Tên"
+        }
+    }
+}
