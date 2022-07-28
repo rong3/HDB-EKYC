@@ -111,12 +111,16 @@ function WebCamDetectComponent(props) {
                 navigator.mediaDevices.getUserMedia({ video: true, audio: false })
                     .then((currentStream) => {
                         const video = webcamRef.current;
+                        window.stream = currentStream;
                         video.srcObject = currentStream;
                         //video.play()
                         faceDetection();
                         //init jeeliz
                         initServiceJeelize();
                         setLoading(false)
+                        setTimeout(() => {
+                            video.play()
+                        }, 5000);
                     })
                     .catch((err) => {
                         setLoading(false)
