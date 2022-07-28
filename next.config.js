@@ -68,21 +68,22 @@ module.exports =
       && Array.isArray(config.optimization.minimizer)
     ) {
       const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-      const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+      // const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
       config.optimization.minimizer.push(
         new OptimizeCSSAssetsPlugin({}),
-        new UglifyJsPlugin({
-          cache: true,
-          extractComments: false,
-          sourceMap: false,
-          parallel: true,
-          uglifyOptions: {
-            compress: true,
-            mangle: true,
-            warnings: false
-          }
-        }));
+        // new UglifyJsPlugin({
+        //   cache: true,
+        //   extractComments: false,
+        //   sourceMap: false,
+        //   parallel: true,
+        //   uglifyOptions: {
+        //     compress: true,
+        //     mangle: true,
+        //     warnings: false
+        //   }
+        // }));
+      );
     }
     return config;
   }
