@@ -110,14 +110,16 @@ function WebCamDetectComponent(props) {
             })))?.then(() => {
                 navigator.mediaDevices.getUserMedia({ video: true, audio: false })
                     .then((currentStream) => {
-                        setLoading(false)
+
                         const video = webcamRef.current;
+                        const videoTracks = currentStream.getVideoTracks();
                         window.stream = currentStream; // make variable available to browser console
                         video.srcObject = currentStream;
-                        video.play()
+                        //video.play()
                         faceDetection();
                         //init jeeliz
                         initServiceJeelize();
+                        setLoading(false)
                     })
                     .catch((err) => {
                         setLoading(false)
@@ -350,9 +352,13 @@ function WebCamDetectComponent(props) {
                 </div>
             }
             <div className='col-md-6'>
+                <button onClick={(e) => {
+                    webcamRef.current.play()
+                }}> open camera</button>
                 {/* //main camera */}
                 <div style={{ display: 'block', zIndex: '9', position: 'relative', width: '100%', borderRadius: '10px', objectFit: 'contain' }}>
                     <video id="video" style={{ background: "#fff" }} className='video-custom' ref={webcamRef} autoplay playsinline></video>
+
                     <div className="overlay-container" id="frame-video-main">
                         <canvas
                             id="canvas"
