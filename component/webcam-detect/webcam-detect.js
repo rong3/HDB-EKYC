@@ -112,7 +112,7 @@ function WebCamDetectComponent(props) {
                     .then((currentStream) => {
                         webcamRef.current.srcObject = currentStream;
                         webcamRef.current.pause();
-                        webcamRef.current.setAttribute('playsinline', '');
+                        webcamRef.current.setAttribute('playsinline', true);
                         webcamRef.current.muted = true;
                         setTimeout(() => {
                             webcamRef.current?.play().then((res) => {
