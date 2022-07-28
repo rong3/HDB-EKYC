@@ -47,6 +47,7 @@ function Default({ Component, pageProps }) {
 
   return (
     <ProvideAuth>
+      {/* <Script src="https://webrtc.github.io/adapter/adapter-latest.js" strategy="beforeInteractive" /> */}
       <Script src="/jeelizFace/jeelizFaceFilter.js" strategy="beforeInteractive" />
       <Script src="/jeelizFace/helper/JeelizCanvas2DHelper.js" strategy="beforeInteractive" />
       <Script src="/jeelizFace/helper/JeelizResizer.js" strategy="beforeInteractive" />
