@@ -111,10 +111,21 @@ function WebCamDetectComponent(props) {
                 navigator.mediaDevices.getUserMedia({ video: true, audio: false })
                     .then((currentStream) => {
                         webcamRef.current.srcObject = currentStream;
-                        setLoading(false)
-                        faceDetection();
-                        //init jeeliz
-                        initServiceJeelize();
+                        webcamRef.current.pause();
+                        webcamRef.current.setAttribute('playsinline', '');
+                        webcamRef.current.muted = true;
+                        setTimeout(() => {
+                            webcamRef.current?.play().then((res) => {
+                                setLoading(false)
+                                faceDetection();
+                                //init jeeliz
+                                initServiceJeelize();
+                            })
+                                .catch((err) => {
+                                    console.log("error playing", err);
+                                });
+                        }, 0);
+
                     })
                     .catch((err) => {
                         setLoading(false)
@@ -349,7 +360,7 @@ function WebCamDetectComponent(props) {
             <div className='col-md-6'>
                 {/* //main camera */}
                 <div style={{ display: 'block', zIndex: '9', position: 'relative', width: '100%', borderRadius: '10px', objectFit: 'contain' }}>
-                    <video id="video" className='video-custom' ref={webcamRef} crossOrigin='anonymous' autoPlay></video>
+                    <video id="video" className='video-custom' ref={webcamRef} crossOrigin='anonymous' autoplay muted playsinline src=""></video>
                     <div className="overlay-container" id="frame-video-main">
                         <canvas
                             id="canvas"
