@@ -72,17 +72,6 @@ module.exports =
 
       config.optimization.minimizer.push(
         new OptimizeCSSAssetsPlugin({}),
-        // new UglifyJsPlugin({
-        //   cache: true,
-        //   extractComments: false,
-        //   sourceMap: false,
-        //   parallel: true,
-        //   uglifyOptions: {
-        //     compress: true,
-        //     mangle: true,
-        //     warnings: false
-        //   }
-        // }));
       );
     }
     return config;
