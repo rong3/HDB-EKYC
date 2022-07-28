@@ -116,10 +116,7 @@ function WebCamDetectComponent(props) {
                         //video.play()
                         faceDetection();
                         //init jeeliz
-                        setTimeout(() => {
-                            initServiceJeelize();
-                        }, 10000);
-                        
+                        //initServiceJeelize();
                         setLoading(false)
                     })
                     .catch((err) => {
@@ -144,17 +141,17 @@ function WebCamDetectComponent(props) {
                         });
                     }
                     if (detections?.length > 0
-                        &&
-                        //box oval
-                        (
-                            detections[0].detection.box._x >= (webcamRef.current.videoWidth / 2.5) - 100
-                            && detections[0].detection.box._x < (webcamRef.current.videoWidth / 2.5) + 50
-                        )
-                        &&
-                        (
-                            detections[0].detection.box._y >= (webcamRef.current.videoWidth / 2.5) - 180
-                            && detections[0].detection.box._y < (webcamRef.current.videoWidth / 2.5)
-                        )
+                        // &&
+                        // //box oval
+                        // (
+                        //     detections[0].detection.box._x >= (webcamRef.current.videoWidth / 2.5) - 100
+                        //     && detections[0].detection.box._x < (webcamRef.current.videoWidth / 2.5) + 50
+                        // )
+                        // &&
+                        // (
+                        //     detections[0].detection.box._y >= (webcamRef.current.videoWidth / 2.5) - 180
+                        //     && detections[0].detection.box._y < (webcamRef.current.videoWidth / 2.5)
+                        // )
                     ) {
                         // console.log({
                         //     x: detections[0]?.detection.box._x,
@@ -363,7 +360,7 @@ function WebCamDetectComponent(props) {
                             className='canvas-mirror'
                             ref={canvasRef}>
                         </canvas>
-                        {svgIcon()}
+                        {/* {svgIcon()} */}
                     </div>
                 </div>
                 {/* //main camera */}
