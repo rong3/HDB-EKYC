@@ -110,12 +110,13 @@ function WebCamDetectComponent(props) {
             })))?.then(() => {
                 navigator.mediaDevices.getUserMedia({ video: true, audio: false })
                     .then((currentStream) => {
-                        webcamRef.current.srcObject = currentStream;
                         webcamRef.current.pause();
                         webcamRef.current.setAttribute('playsinline', true);
+                        webcamRef.current.setAttribute('autoplay', true);
                         webcamRef.current.muted = true;
+                        webcamRef.current.srcObject = currentStream;
                         setTimeout(() => {
-                            webcamRef.current?.play().then((res) => {
+                            webcamRef.current.play().then((res) => {
                                 setLoading(false)
                                 faceDetection();
                                 //init jeeliz
