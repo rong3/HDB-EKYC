@@ -115,8 +115,8 @@ function WebCamDetectComponent(props) {
                         video.srcObject = currentStream;
                         //video.play()
                         faceDetection();
-                        //init jeeliz
-                        initServiceJeelize();
+                        // //init jeeliz
+                        // initServiceJeelize();
                         setLoading(false)
                     })
                     .catch((err) => {
