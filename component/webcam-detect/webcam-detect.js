@@ -44,6 +44,12 @@ function WebCamDetectComponent(props) {
         output: {
             mouthOpen: null,
             detection: null
+        },
+        debug: {
+            x: null,
+            y: null,
+            deviceX: null,
+            deviceY: null
         }
     })
 
@@ -132,19 +138,23 @@ function WebCamDetectComponent(props) {
                     const detections = await faceapi.detectAllFaces(webcamRef.current, new faceapi.TinyFaceDetectorOptions({
                         // scoreThreshold: 0.8,
                     }))?.withFaceLandmarks()?.withFaceExpressions();
-                    // if (detections?.length > 0) {
-                    //     console.log({
-                    //         x: detections[0]?.detection.box._x,
-                    //         y: detections[0]?.detection.box._y,
-                    //         wc_width_from: (webcamRef.current.videoWidth / 2.5),
-                    //         wc_width_to: (webcamRef.current.videoWidth / 2.5)
-                    //     });
-                    // }
+                    if (detections?.length > 0) {
+                        threejsMaterial.debug.x = detections[0]?.detection.box._x;
+                        threejsMaterial.debug.y = detections[0]?.detection.box._y;
+                        threejsMaterial.debug.deviceX = (webcamRef.current.videoWidth / 2.5);
+                        threejsMaterial.debug.deviceY = webcamRef.current.videoWidth / 2.5
+                        // console.log({
+                        //     x: detections[0]?.detection.box._x,
+                        //     y: detections[0]?.detection.box._y,
+                        //     wc_width_from: (webcamRef.current.videoWidth / 2.5),
+                        //     wc_width_to: (webcamRef.current.videoWidth / 2.5)
+                        // });
+                    }
                     if (detections?.length > 0
                         &&
                         //box oval
                         (
-                            detections[0].detection.box._x >= (webcamRef.current.videoWidth / 2.5) - 100
+                            detections[0].detection.box._x >= (webcamRef.current.videoWidth / 2.5) - 150
                             && detections[0].detection.box._x < (webcamRef.current.videoWidth / 2.5) + 50
                         )
                         &&
@@ -246,7 +256,7 @@ function WebCamDetectComponent(props) {
                 }
                 catch { }
             }
-        }, 100)
+        }, 200)
     }
 
     async function extractFaceFromBox(inputImage, box, detectionData) {
@@ -381,7 +391,7 @@ function WebCamDetectComponent(props) {
                     Expression box
                 </p>
                 {/* //this canvas for init rotate facing */}
-                <canvas style={{ opacity: checkboxExpression.current ? 1 : 0.01, display: 'block' }} className="canvas-generic" id='jeeFaceFilterCanvas' width={295} height={200}></canvas>
+                {/* <canvas style={{ opacity: checkboxExpression.current ? 1 : 0.01, display: 'block' }} className="canvas-generic" id='jeeFaceFilterCanvas' width={295} height={200}></canvas> */}
                 {/* //end canvas for init rotate facing */}
 
                 {/* //this canvas for init mouth */}
@@ -391,6 +401,14 @@ function WebCamDetectComponent(props) {
 
                 {/* //result */}
                 <p style={{ textAlign: 'left', fontWeight: 'bold', fontSize: '15px' }}>
+                    [detectX]: {threejsMaterial.debug.x}
+                    <br />
+                    [detectY]: {threejsMaterial.debug.y}
+                    <br />
+                    [deviceX]: {threejsMaterial.debug.deviceX}
+                    <br />
+                    [deviceY]: {threejsMaterial.debug.deviceY}
+                    <br />
                     [Góc mặt]: {detectLeftRight.current.desc} {detectLeftRight.current.value?.toFixed(10)}
                     <br />
                     [Kích thước Khuôn miệng]: {threejsMaterial.output.mouthOpen?.toFixed(10)}
