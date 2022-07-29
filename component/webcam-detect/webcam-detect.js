@@ -141,8 +141,8 @@ function WebCamDetectComponent(props) {
                     if (detections?.length > 0) {
                         threejsMaterial.debug.x = detections[0]?.detection.box._x;
                         threejsMaterial.debug.y = detections[0]?.detection.box._y;
-                        threejsMaterial.debug.deviceX = (webcamRef.current.videoWidth / 2.5);
-                        threejsMaterial.debug.deviceY = webcamRef.current.videoWidth / 2.5
+                        threejsMaterial.debug.deviceX = webcamRef.current.videoWidth / 2.5;
+                        threejsMaterial.debug.deviceY = webcamRef.current.videoHeight / 2.5;
                         // console.log({
                         //     x: detections[0]?.detection.box._x,
                         //     y: detections[0]?.detection.box._y,
@@ -159,8 +159,8 @@ function WebCamDetectComponent(props) {
                         )
                         &&
                         (
-                            detections[0].detection.box._y >= (webcamRef.current.videoWidth / 2.5) - 180
-                            && detections[0].detection.box._y < (webcamRef.current.videoWidth)
+                            detections[0].detection.box._y >= (webcamRef.current.videoHeight / 2.5) - 50
+                            && detections[0].detection.box._y < (webcamRef.current.videoHeight / 2.5) + 50
                         )
                     ) {
                         // console.log({
