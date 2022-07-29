@@ -325,7 +325,7 @@ function WebCamDetectComponent(props) {
                             fill: '#fff', fillOpacity: '0.06', strokeWidth: 5,
                             strokeDasharray: '1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2'
                         }}
-                        cx="50%" cy="50%" rx="30%" ry="35%">
+                        cx="50%" cy="50%" rx="30%" ry="40%">
                     </ellipse>
                 </g>
                 <g id="three">
