@@ -91,14 +91,14 @@ function WebCamDetectComponent(props) {
         JEELIZFACEFILTER.get_videoDevices((data) => {
             const deviceid = data[0]?.deviceId ?? null;
             initHeadMotion('jeeFaceFilterCanvas', detectLeftRight, deviceid)
-           // initThreejs(deviceid, threejsMaterial);
+            initThreejs(deviceid, threejsMaterial);
         })
     }
 
     const loadModels = () => {
         setLoading(true);
         Promise.all([
-            // faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
+            faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
             faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
             faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
             faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
@@ -116,7 +116,7 @@ function WebCamDetectComponent(props) {
                         //video.play()
                         faceDetection();
                         //init jeeliz
-                        //initServiceJeelize();
+                        initServiceJeelize();
                         setLoading(false)
                     })
                     .catch((err) => {
@@ -132,26 +132,26 @@ function WebCamDetectComponent(props) {
                     const detections = await faceapi.detectAllFaces(webcamRef.current, new faceapi.TinyFaceDetectorOptions({
                         // scoreThreshold: 0.8,
                     }))?.withFaceLandmarks()?.withFaceExpressions();
-                    if (detections?.length > 0) {
-                        console.log({
-                            x: detections[0]?.detection.box._x,
-                            y: detections[0]?.detection.box._y,
-                            wc_width_from: (webcamRef.current.videoWidth / 2.5),
-                            wc_width_to: (webcamRef.current.videoWidth / 2.5)
-                        });
-                    }
+                    // if (detections?.length > 0) {
+                    //     console.log({
+                    //         x: detections[0]?.detection.box._x,
+                    //         y: detections[0]?.detection.box._y,
+                    //         wc_width_from: (webcamRef.current.videoWidth / 2.5),
+                    //         wc_width_to: (webcamRef.current.videoWidth / 2.5)
+                    //     });
+                    // }
                     if (detections?.length > 0
-                        // &&
-                        // //box oval
-                        // (
-                        //     detections[0].detection.box._x >= (webcamRef.current.videoWidth / 2.5) - 100
-                        //     && detections[0].detection.box._x < (webcamRef.current.videoWidth / 2.5) + 50
-                        // )
-                        // &&
-                        // (
-                        //     detections[0].detection.box._y >= (webcamRef.current.videoWidth / 2.5) - 180
-                        //     && detections[0].detection.box._y < (webcamRef.current.videoWidth / 2.5)
-                        // )
+                        &&
+                        //box oval
+                        (
+                            detections[0].detection.box._x >= (webcamRef.current.videoWidth / 2.5) - 100
+                            && detections[0].detection.box._x < (webcamRef.current.videoWidth / 2.5) + 50
+                        )
+                        &&
+                        (
+                            detections[0].detection.box._y >= (webcamRef.current.videoWidth / 2.5) - 180
+                            && detections[0].detection.box._y < (webcamRef.current.videoWidth / 2.5)
+                        )
                     ) {
                         // console.log({
                         //     x: detections[0]?.detection.box._x,
@@ -219,7 +219,7 @@ function WebCamDetectComponent(props) {
 
                             ctx.strokeStyle = 'blue';
                             ctx.stroke();
-                            //drawing
+                            //drawing landmark
                             faceapi.draw.drawDetections(canvas, resizedDetections2)
                             faceapi.draw.drawFaceLandmarks(canvas, resizedDetections2)
                             faceapi.draw.drawFaceExpressions(canvas, resizedDetections2)
@@ -315,7 +315,7 @@ function WebCamDetectComponent(props) {
                             fill: '#fff', fillOpacity: '0.06', strokeWidth: 5,
                             strokeDasharray: '1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2 1 2'
                         }}
-                        cx="50%" cy="50%" rx="30%" ry="45%">
+                        cx="50%" cy="50%" rx="30%" ry="40%">
                     </ellipse>
                 </g>
                 <g id="three">
@@ -360,7 +360,7 @@ function WebCamDetectComponent(props) {
                             className='canvas-mirror'
                             ref={canvasRef}>
                         </canvas>
-                        {/* {svgIcon()} */}
+                        {svgIcon()}
                     </div>
                 </div>
                 {/* //main camera */}
