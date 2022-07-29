@@ -160,7 +160,7 @@ function WebCamDetectComponent(props) {
                         &&
                         (
                             detections[0].detection.box._y >= (webcamRef.current.videoWidth / 2.5) - 180
-                            && detections[0].detection.box._y < (webcamRef.current.videoWidth / 2.5)
+                            && detections[0].detection.box._y < (webcamRef.current.videoWidth)
                         )
                     ) {
                         // console.log({
