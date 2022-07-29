@@ -159,7 +159,7 @@ function WebCamDetectComponent(props) {
                         )
                         &&
                         (
-                            detections[0].detection.box._y >= (webcamRef.current.videoHeight / 2.5) - 50
+                            detections[0].detection.box._y >= (webcamRef.current.videoHeight / 2.5) - 70
                             && detections[0].detection.box._y < (webcamRef.current.videoHeight / 2.5) + 50
                         )
                     ) {
@@ -256,7 +256,7 @@ function WebCamDetectComponent(props) {
                 }
                 catch { }
             }
-        }, 200)
+        }, 100)
     }
 
     async function extractFaceFromBox(inputImage, box, detectionData) {
