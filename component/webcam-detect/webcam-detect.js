@@ -103,10 +103,10 @@ function WebCamDetectComponent(props) {
     const loadModels = () => {
         setLoading(true);
         Promise.all([
-            faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
+            // faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
             faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
             faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-            // faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+            faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
             faceapi.nets.faceExpressionNet.loadFromUri('/models'),
         ]?.map((_, i) => resolveToVal(i)
             .then(() => {
@@ -135,6 +135,7 @@ function WebCamDetectComponent(props) {
             if (webcamRef.current) {
                 try {
                     const detections = await faceapi.detectSingleFace(webcamRef.current, new faceapi.TinyFaceDetectorOptions({
+                        scoreThreshold: 0.1
                     }))?.withFaceLandmarks()?.withFaceExpressions();
                     if (detections) {
                         threejsMaterial.debug.x = detections?.detection.box._x;
@@ -247,12 +248,12 @@ function WebCamDetectComponent(props) {
                 }
                 catch { }
             }
-        }, 200)
+        }, 150)
     }
 
     async function extractFaceFromBox(inputImage, box) {
         const regionsToExtract = [
-            new faceapi.Rect(box.x-50, box.y - 120, box.width + 100, box.height + 120)
+            new faceapi.Rect(box.x - 50, box.y - 120, box.width + 100, box.height + 120)
         ]
 
         let faceImages = await faceapi.extractFaces(inputImage, regionsToExtract)
