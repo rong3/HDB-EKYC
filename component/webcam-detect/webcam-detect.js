@@ -222,7 +222,7 @@ function WebCamDetectComponent(props) {
                             drawComponentFace(ctx, componentPoint.rightEyeBrow, 40, 20);
 
                             //drawing landmark
-                            faceapi.draw.drawDetections(canvas, resizedDetections2)
+                            // faceapi.draw.drawDetections(canvas, resizedDetections2)
                             // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections2)
                             //faceapi.draw.drawFaceExpressions(canvas, resizedDetections2)
 
