@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { random } from "lodash"
 
 export function useChallengeEkycService(props) {
-    const randomBoxPoseNoseX = [-60, -40, 40, 60]; //truc ngang
+    const randomBoxPoseNoseX = [-40, -20, 20, 40]; //truc ngang
     const randomBoxPoseNoseY = [-20, -10, 10, 20]; // truc doc
 
     const [templateChalleng_1, setTemplateChalleng_1] = useState({
@@ -20,13 +20,17 @@ export function useChallengeEkycService(props) {
 
     }, [])
 
-    const challenge_1 = (ctx, nosePos, smileData) => {
+    const challenge_1 = (canvas, ctx, nosePos, smileData) => {
         if (templateChalleng_1.ekycStep.poseNose.isPass === false) {
+            const centerPointWidth = 20;
+            const centerPointHeight = 20;
             if (nosePos && templateChalleng_1.ekycStep.poseNose.box === null) {
+                //draw a random box from a center ínide canvas
+                const centerPosX = (canvas.width / 2) - (centerPointWidth / 2);
+                const centerPosY = (canvas.height / 2) - (centerPointHeight / 2);
                 const random_box = {
-                    ...nosePos,
-                    x: nosePos.x + randomBoxPoseNoseX[random(0, randomBoxPoseNoseX.length - 1)]
-                    , y: nosePos.y + randomBoxPoseNoseY[random(0, randomBoxPoseNoseY.length - 1)],
+                    x: centerPosX + randomBoxPoseNoseX[random(0, randomBoxPoseNoseX.length - 1)],
+                    y: centerPosY + randomBoxPoseNoseY[random(0, randomBoxPoseNoseY.length - 1)],
                     text: ''
                 }
                 templateChalleng_1.ekycStep.poseNose.box = random_box;
@@ -41,7 +45,7 @@ export function useChallengeEkycService(props) {
                 ) {
                     templateChalleng_1.ekycStep.poseNose.isPass = true
                 }
-                drawComponentFace(ctx, templateChalleng_1.ekycStep.poseNose.box, 20, 20, 'yellow')
+                drawComponentFace(ctx, templateChalleng_1.ekycStep.poseNose.box, centerPointWidth, centerPointHeight, 'yellow')
             }
         }
         else {
@@ -51,10 +55,18 @@ export function useChallengeEkycService(props) {
         }
     }
 
+    const resetChallenge_1 = () => {
+        templateChalleng_1.ekycStep.poseNose.box = null;
+        templateChalleng_1.ekycStep.poseNose.isPass = false;
+        templateChalleng_1.ekycStep.smiling = false;
+        setTemplateChalleng_1({ ...templateChalleng_1 })
+    }
+
     return {
         challengeSimple: {
             ekycStep: templateChalleng_1.ekycStep,
-            challenge_1: challenge_1
+            challenge_1: challenge_1,
+            resetChallenge_1: resetChallenge_1
         }
     };
 }

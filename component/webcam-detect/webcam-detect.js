@@ -103,10 +103,10 @@ function WebCamDetectComponent(props) {
     const loadModels = () => {
         setLoading(true);
         Promise.all([
-            faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
+            // faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
             faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
             faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-            faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+            // faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
             faceapi.nets.faceExpressionNet.loadFromUri('/models'),
         ]?.map((_, i) => resolveToVal(i)
             .then(() => {
@@ -174,7 +174,7 @@ function WebCamDetectComponent(props) {
                         const componentPoint = {
                             nose: {
                                 x: resizedDetections2[0]?.landmarks?.getNose()?.at(2)?._x - 10,
-                                y: resizedDetections2[0]?.landmarks?.getNose()?.at(2)?._y - 10,
+                                y: resizedDetections2[0]?.landmarks?.getNose()?.at(2)?._y + 5,
                                 text: 'Mũi'
                             },
                             leftEye: {
@@ -206,8 +206,8 @@ function WebCamDetectComponent(props) {
                         //end canvas declaration
 
                         //ekyc challenge
-                        challengeSimple.challenge_1(ctx, componentPoint.nose, detections[0]);
-                       
+                        challengeSimple.challenge_1(canvas, ctx, componentPoint.nose, detections[0]);
+
                         //if expression is enabled
                         if (checkboxExpression.current) {
                             drawComponentFace(ctx, componentPoint.nose);
@@ -216,7 +216,7 @@ function WebCamDetectComponent(props) {
                             drawComponentFace(ctx, componentPoint.mouth, 40, 20);
                             drawComponentFace(ctx, componentPoint.leftEyeBrow, 40, 20);
                             drawComponentFace(ctx, componentPoint.rightEyeBrow, 40, 20);
-                          
+
                             //drawing landmark
                             // faceapi.draw.drawDetections(canvas, resizedDetections2)
                             // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections2)
@@ -244,7 +244,7 @@ function WebCamDetectComponent(props) {
                 }
                 catch { }
             }
-        }, 100)
+        }, 150)
     }
 
     async function extractFaceFromBox(inputImage, box) {
@@ -367,8 +367,8 @@ function WebCamDetectComponent(props) {
                 {/* //end canvas for init rotate facing */}
 
                 {/* //this canvas for init mouth */}
-                <canvas style={{ display: checkboxExpression.current ? "block" : 'none' }} className="canvas-mirror box-3d-custom" id='threeCanvas'></canvas>
-                <canvas style={{ display: checkboxExpression.current ? "none" : 'none' }} className="canvas-generic" id='modelfacecanvas'></canvas>
+                {/* <canvas style={{ display: checkboxExpression.current ? "block" : 'none' }} className="canvas-mirror box-3d-custom" id='threeCanvas'></canvas>
+                <canvas style={{ display: checkboxExpression.current ? "none" : 'none' }} className="canvas-generic" id='modelfacecanvas'></canvas> */}
                 {/* //end canvas init mouth */}
 
                 {/* //result */}
@@ -388,7 +388,16 @@ function WebCamDetectComponent(props) {
                     [Vị trí miệng]: x: {threejsMaterial.output.detection?.landmarks?.getMouth()?.at(-1)?._x?.toFixed(10)} , y: {threejsMaterial.output.detection?.landmarks?.getMouth()?.at(-1)?._y?.toFixed(10)}
                     <br />
                     [Vị trí mũi]: x: {threejsMaterial.output.detection?.landmarks?.getNose()?.at(-1)?._x?.toFixed(10)} , y: {threejsMaterial.output.detection?.landmarks?.getNose()?.at(-1)?._y?.toFixed(10)}
-
+                    <hr />
+                    <p>*Challenge 1 &nbsp;&nbsp;
+                        <button type='button' className='btn btn-danger ml-2' onClick={() => {
+                            setPreViewImageVideo(null);
+                            challengeSimple.resetChallenge_1()
+                        }}>Reset challenge</button>
+                    </p>
+                    [1- Đưa mũi vào vị trí]: {challengeSimple.ekycStep.poseNose.isPass ? 'Pass' : 'Failed'}
+                    <br />
+                    [2- Mĩm cười]: {challengeSimple.ekycStep.smiling ? 'Pass' : 'Failed'}
                 </p>
                 {/* //end result */}
             </div>
