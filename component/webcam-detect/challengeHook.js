@@ -4,7 +4,7 @@ import { random } from "lodash"
 
 export function useChallengeEkycService(props) {
     const randomBoxPoseNoseX = [-40, -20, 20, 40]; //truc ngang
-    const randomBoxPoseNoseY = [-20, -10, 10, 20]; // truc doc
+    const randomBoxPoseNoseY = [-10, -5, 5, 10]; // truc doc
 
     const [templateChalleng_1, setTemplateChalleng_1] = useState({
         ekycStep: {

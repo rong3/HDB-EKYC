@@ -152,7 +152,7 @@ function init_faceFilter(deviceId, threejsMaterial) {
     }); //end JEELIZFACEFILTER.init call
 }
 
-export const drawComponentFace = (ctx, component, width = 20, height = 20, color = 'blue') => {
+export const drawComponentFace = (ctx, component, width = 20, height = 20, color = 'green') => {
     ctx.rect(
         component?.x,
         component?.y,

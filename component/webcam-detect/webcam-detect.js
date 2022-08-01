@@ -134,30 +134,30 @@ function WebCamDetectComponent(props) {
         setInterval(async () => {
             if (webcamRef.current) {
                 try {
-                    const detections = await faceapi.detectAllFaces(webcamRef.current, new faceapi.TinyFaceDetectorOptions({
+                    const detections = await faceapi.detectSingleFace(webcamRef.current, new faceapi.TinyFaceDetectorOptions({
                     }))?.withFaceLandmarks()?.withFaceExpressions();
-                    if (detections?.length > 0) {
-                        threejsMaterial.debug.x = detections[0]?.detection.box._x;
-                        threejsMaterial.debug.y = detections[0]?.detection.box._y;
+                    if (detections) {
+                        threejsMaterial.debug.x = detections?.detection.box._x;
+                        threejsMaterial.debug.y = detections?.detection.box._y;
                         threejsMaterial.debug.deviceX = webcamRef.current.videoWidth / 2.5;
                         threejsMaterial.debug.deviceY = webcamRef.current.videoHeight / 2.5;
                     }
-                    if (detections?.length > 0
+                    if (detections
                         &&
                         //box oval
                         (
-                            detections[0].detection.box._x >= (webcamRef.current.videoWidth / 2.5) - 150
-                            && detections[0].detection.box._x < (webcamRef.current.videoWidth / 2.5) + 50
+                            detections.detection.box._x >= (webcamRef.current.videoWidth / 2.5) - 150
+                            && detections.detection.box._x < (webcamRef.current.videoWidth / 2.5) + 50
                         )
                         &&
                         (
-                            detections[0].detection.box._y >= (webcamRef.current.videoHeight / 2.5) - 70
-                            && detections[0].detection.box._y < (webcamRef.current.videoHeight / 2.5) + 100
+                            detections.detection.box._y >= (webcamRef.current.videoHeight / 2.5) - 70
+                            && detections.detection.box._y < (webcamRef.current.videoHeight / 2.5) + 100
                         )
                     ) {
                         //Call this function to extract and display face
                         setIsDetectFace(true)
-                        detections?.length > 0 && extractFaceFromBox(webcamRef.current, detections[0].detection.box)
+                        detections && extractFaceFromBox(webcamRef.current, detections?.detection?.box)
 
                         //canvas declaration
                         const canvas = canvasRef.current;
@@ -166,47 +166,50 @@ function WebCamDetectComponent(props) {
                         var ctx = canvas.getContext('2d');
                         ctx?.clearRect(0, 0, canvas.width, canvas.height)
                         ctx.beginPath();
-                        // context.translate(canvas.width, 0);
-                        // context.scale(-1,1);
+                        // ctx.translate(canvas.width, 0);
+                        // ctx.scale(-1,1);
+                        // ctx.drawImage(canvasRef.current, canvas.width * -1, 0);
+                        // ctx.restore();
+
                         faceapi.matchDimensions(canvas, displaySize)
                         const resizedDetections2 = faceapi.resizeResults(detections, displaySize)
-                        threejsMaterial.output.detection = resizedDetections2[0];
+                        threejsMaterial.output.detection = resizedDetections2;
                         const componentPoint = {
                             nose: {
-                                x: resizedDetections2[0]?.landmarks?.getNose()?.at(2)?._x - 10,
-                                y: resizedDetections2[0]?.landmarks?.getNose()?.at(2)?._y + 5,
+                                x: resizedDetections2?.landmarks?.getNose()?.at(2)?._x - 10,
+                                y: resizedDetections2?.landmarks?.getNose()?.at(2)?._y + 5,
                                 text: 'Mũi'
                             },
                             leftEye: {
-                                x: resizedDetections2[0]?.landmarks?.getLeftEye()?.at(2)?._x - 10,
-                                y: resizedDetections2[0]?.landmarks?.getLeftEye()?.at(2)?._y,
+                                x: resizedDetections2?.landmarks?.getLeftEye()?.at(2)?._x - 10,
+                                y: resizedDetections2?.landmarks?.getLeftEye()?.at(2)?._y,
                                 text: 'Mắt phải'
                             },
                             rightEye: {
-                                x: resizedDetections2[0]?.landmarks?.getRightEye()?.at(2)?._x - 10,
-                                y: resizedDetections2[0]?.landmarks?.getRightEye()?.at(2)?._y,
+                                x: resizedDetections2?.landmarks?.getRightEye()?.at(2)?._x - 10,
+                                y: resizedDetections2?.landmarks?.getRightEye()?.at(2)?._y,
                                 text: 'Mắt trái'
                             },
                             mouth: {
-                                x: resizedDetections2[0]?.landmarks?.getMouth()?.at(2)?._x - 10,
-                                y: resizedDetections2[0]?.landmarks?.getMouth()?.at(2)?._y,
+                                x: resizedDetections2?.landmarks?.getMouth()?.at(2)?._x - 10,
+                                y: resizedDetections2?.landmarks?.getMouth()?.at(2)?._y,
                                 text: "Mồm"
                             },
                             leftEyeBrow: {
-                                x: resizedDetections2[0]?.landmarks?.getLeftEyeBrow()?.at(2)?._x - 10,
-                                y: resizedDetections2[0]?.landmarks?.getLeftEyeBrow()?.at(2)?._y,
+                                x: resizedDetections2?.landmarks?.getLeftEyeBrow()?.at(2)?._x - 10,
+                                y: resizedDetections2?.landmarks?.getLeftEyeBrow()?.at(2)?._y,
                                 text: "Lông mày phải"
                             },
                             rightEyeBrow: {
-                                x: resizedDetections2[0]?.landmarks?.getRightEyeBrow()?.at(2)?._x - 10,
-                                y: resizedDetections2[0]?.landmarks?.getRightEyeBrow()?.at(2)?._y,
+                                x: resizedDetections2?.landmarks?.getRightEyeBrow()?.at(2)?._x - 10,
+                                y: resizedDetections2?.landmarks?.getRightEyeBrow()?.at(2)?._y,
                                 text: "Lông mày trái"
                             },
                         }
                         //end canvas declaration
 
                         //ekyc challenge
-                        challengeSimple.challenge_1(canvas, ctx, componentPoint.nose, detections[0]);
+                        challengeSimple.challenge_1(canvas, ctx, componentPoint.nose, detections);
 
                         //if expression is enabled
                         if (checkboxExpression.current) {
@@ -244,7 +247,7 @@ function WebCamDetectComponent(props) {
                 }
                 catch { }
             }
-        }, 150)
+        }, 200)
     }
 
     async function extractFaceFromBox(inputImage, box) {
@@ -303,11 +306,11 @@ function WebCamDetectComponent(props) {
                 <g id="three">
                     {
                         isDetectFace ? <svg height="80%" width="100%">
-                            <text x="47%" y="4%" fill="green" fontSize={13}>{progressLoading.livenessCheck}</text>
+                            <text x="40%" y="4%" fill="green" fontSize={13}>{progressLoading.livenessCheck}</text>
                         </svg>
                             :
                             <svg height="80%" width="100%">
-                                <text x="47%" y="4%" fill="red" fontSize={13}>{progressLoading.valueError}</text>
+                                <text x="40%" y="4%" fill="red" fontSize={13}>{progressLoading.valueError}</text>
                             </svg>
                     }
                 </g>
