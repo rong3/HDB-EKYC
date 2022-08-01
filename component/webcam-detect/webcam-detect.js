@@ -2,8 +2,10 @@ import React, { useState, useRef, useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import * as faceapi from "face-api.js";
 import { initHeadMotion, initThreejs, drawComponentFace } from './jeelizeService';
+import { useChallengeEkycService } from './challengeHook';
 
 function WebCamDetectComponent(props) {
+    const { challengeSimple } = useChallengeEkycService();
     const [loading, setLoading] = useState(false);
     const [progressLoading, setProgressLoading] = useState({
         value: "",
@@ -21,9 +23,6 @@ function WebCamDetectComponent(props) {
             "Đảm bảo không có vật gì che những thành phần trên khuôn mặt"
         ],
         livenessCheck: "",
-        checkStep: {
-            smile: null
-        },
         valueError: ""
     });
     const { func } = props;
@@ -136,19 +135,12 @@ function WebCamDetectComponent(props) {
             if (webcamRef.current) {
                 try {
                     const detections = await faceapi.detectAllFaces(webcamRef.current, new faceapi.TinyFaceDetectorOptions({
-                        // scoreThreshold: 0.8,
                     }))?.withFaceLandmarks()?.withFaceExpressions();
                     if (detections?.length > 0) {
                         threejsMaterial.debug.x = detections[0]?.detection.box._x;
                         threejsMaterial.debug.y = detections[0]?.detection.box._y;
                         threejsMaterial.debug.deviceX = webcamRef.current.videoWidth / 2.5;
                         threejsMaterial.debug.deviceY = webcamRef.current.videoHeight / 2.5;
-                        // console.log({
-                        //     x: detections[0]?.detection.box._x,
-                        //     y: detections[0]?.detection.box._y,
-                        //     wc_width_from: (webcamRef.current.videoWidth / 2.5),
-                        //     wc_width_to: (webcamRef.current.videoWidth / 2.5)
-                        // });
                     }
                     if (detections?.length > 0
                         &&
@@ -160,79 +152,75 @@ function WebCamDetectComponent(props) {
                         &&
                         (
                             detections[0].detection.box._y >= (webcamRef.current.videoHeight / 2.5) - 70
-                            && detections[0].detection.box._y < (webcamRef.current.videoHeight / 2.5) + 50
+                            && detections[0].detection.box._y < (webcamRef.current.videoHeight / 2.5) + 100
                         )
                     ) {
-                        // console.log({
-                        //     x: detections[0]?.detection.box._x,
-                        //     y: detections[0]?.detection.box._y
-                        // });
-                        setIsDetectFace(true)
                         //Call this function to extract and display face
-                        detections?.length > 0 && extractFaceFromBox(webcamRef.current, detections[0].detection.box, detections[0])
-                        // detections?.length > 0 && console.log("Left Eye landmarks===========>" + detections[0].landmarks.getLeftEye());
+                        setIsDetectFace(true)
+                        detections?.length > 0 && extractFaceFromBox(webcamRef.current, detections[0].detection.box)
+
+                        //canvas declaration
+                        const canvas = canvasRef.current;
+                        canvas.innerHtml = await faceapi.createCanvasFromMedia(webcamRef.current);
+                        const displaySize = { width: webcamRef.current?.offsetWidth, height: webcamRef.current?.offsetHeight }
+                        var ctx = canvas.getContext('2d');
+                        ctx?.clearRect(0, 0, canvas.width, canvas.height)
+                        ctx.beginPath();
+                        // context.translate(canvas.width, 0);
+                        // context.scale(-1,1);
+                        faceapi.matchDimensions(canvas, displaySize)
+                        const resizedDetections2 = faceapi.resizeResults(detections, displaySize)
+                        threejsMaterial.output.detection = resizedDetections2[0];
+                        const componentPoint = {
+                            nose: {
+                                x: resizedDetections2[0]?.landmarks?.getNose()?.at(2)?._x - 10,
+                                y: resizedDetections2[0]?.landmarks?.getNose()?.at(2)?._y - 10,
+                                text: 'Mũi'
+                            },
+                            leftEye: {
+                                x: resizedDetections2[0]?.landmarks?.getLeftEye()?.at(2)?._x - 10,
+                                y: resizedDetections2[0]?.landmarks?.getLeftEye()?.at(2)?._y,
+                                text: 'Mắt phải'
+                            },
+                            rightEye: {
+                                x: resizedDetections2[0]?.landmarks?.getRightEye()?.at(2)?._x - 10,
+                                y: resizedDetections2[0]?.landmarks?.getRightEye()?.at(2)?._y,
+                                text: 'Mắt trái'
+                            },
+                            mouth: {
+                                x: resizedDetections2[0]?.landmarks?.getMouth()?.at(2)?._x - 10,
+                                y: resizedDetections2[0]?.landmarks?.getMouth()?.at(2)?._y,
+                                text: "Mồm"
+                            },
+                            leftEyeBrow: {
+                                x: resizedDetections2[0]?.landmarks?.getLeftEyeBrow()?.at(2)?._x - 10,
+                                y: resizedDetections2[0]?.landmarks?.getLeftEyeBrow()?.at(2)?._y,
+                                text: "Lông mày phải"
+                            },
+                            rightEyeBrow: {
+                                x: resizedDetections2[0]?.landmarks?.getRightEyeBrow()?.at(2)?._x - 10,
+                                y: resizedDetections2[0]?.landmarks?.getRightEyeBrow()?.at(2)?._y,
+                                text: "Lông mày trái"
+                            },
+                        }
+                        //end canvas declaration
+
+                        //ekyc challenge
+                        challengeSimple.challenge_1(ctx, componentPoint.nose, detections[0]);
+                       
+                        //if expression is enabled
                         if (checkboxExpression.current) {
-
-                            canvasRef.current.innerHtml = await faceapi.createCanvasFromMedia(webcamRef.current);
-                            //draw inside
-                            const canvas = canvasRef.current
-                            const displaySize = { width: webcamRef.current?.offsetWidth, height: webcamRef.current?.offsetHeight }
-                            faceapi.matchDimensions(canvas, displaySize)
-
-                            const resizedDetections2 = faceapi.resizeResults(detections, displaySize)
-                            threejsMaterial.output.detection = resizedDetections2[0];
-                            var ctx = canvas.getContext('2d');
-                            ctx?.clearRect(0, 0, canvas.width, canvas.height)
-                            ctx.beginPath();
-                            // context.translate(canvas.width, 0);
-                            // context.scale(-1,1);
-
-                            const componentPoint = {
-                                nose: {
-                                    x: resizedDetections2[0]?.landmarks?.getNose()?.at(2)?._x - 10,
-                                    y: resizedDetections2[0]?.landmarks?.getNose()?.at(2)?._y - 10,
-                                    text: 'Mũi'
-                                },
-                                leftEye: {
-                                    x: resizedDetections2[0]?.landmarks?.getLeftEye()?.at(2)?._x - 10,
-                                    y: resizedDetections2[0]?.landmarks?.getLeftEye()?.at(2)?._y,
-                                    text: 'Mắt phải'
-                                },
-                                rightEye: {
-                                    x: resizedDetections2[0]?.landmarks?.getRightEye()?.at(2)?._x - 10,
-                                    y: resizedDetections2[0]?.landmarks?.getRightEye()?.at(2)?._y,
-                                    text: 'Mắt trái'
-                                },
-                                mouth: {
-                                    x: resizedDetections2[0]?.landmarks?.getMouth()?.at(2)?._x - 10,
-                                    y: resizedDetections2[0]?.landmarks?.getMouth()?.at(2)?._y,
-                                    text: "Mồm"
-                                },
-                                leftEyeBrow: {
-                                    x: resizedDetections2[0]?.landmarks?.getLeftEyeBrow()?.at(2)?._x - 10,
-                                    y: resizedDetections2[0]?.landmarks?.getLeftEyeBrow()?.at(2)?._y,
-                                    text: "Lông mày phải"
-                                },
-                                rightEyeBrow: {
-                                    x: resizedDetections2[0]?.landmarks?.getRightEyeBrow()?.at(2)?._x - 10,
-                                    y: resizedDetections2[0]?.landmarks?.getRightEyeBrow()?.at(2)?._y,
-                                    text: "Lông mày trái"
-                                },
-                            }
-
                             drawComponentFace(ctx, componentPoint.nose);
                             drawComponentFace(ctx, componentPoint.leftEye);
                             drawComponentFace(ctx, componentPoint.rightEye);
                             drawComponentFace(ctx, componentPoint.mouth, 40, 20);
                             drawComponentFace(ctx, componentPoint.leftEyeBrow, 40, 20);
                             drawComponentFace(ctx, componentPoint.rightEyeBrow, 40, 20);
-
-                            ctx.strokeStyle = 'blue';
-                            ctx.stroke();
+                          
                             //drawing landmark
-                            faceapi.draw.drawDetections(canvas, resizedDetections2)
-                            faceapi.draw.drawFaceLandmarks(canvas, resizedDetections2)
-                            faceapi.draw.drawFaceExpressions(canvas, resizedDetections2)
+                            // faceapi.draw.drawDetections(canvas, resizedDetections2)
+                            // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections2)
+                            // faceapi.draw.drawFaceExpressions(canvas, resizedDetections2)
 
                             //age detect
                             // resized?.forEach(result => {
@@ -259,8 +247,7 @@ function WebCamDetectComponent(props) {
         }, 100)
     }
 
-    async function extractFaceFromBox(inputImage, box, detectionData) {
-
+    async function extractFaceFromBox(inputImage, box) {
         const regionsToExtract = [
             new faceapi.Rect(box.x, box.y - 120, box.width + 10, box.height + 120)
         ]
@@ -271,34 +258,19 @@ function WebCamDetectComponent(props) {
             setPreViewImageVideo(null)
         }
         else {
-            // faceImages.forEach(cnv => {
-            //     progressLoading.checkStep.smile = null;
-            //     progressLoading.livenessCheck = "Đã chụp ảnh";
-            //     setProgressLoading({ ...progressLoading })
-            //     setPreViewImageVideo(cnv.toDataURL());
-            // })
-
-            //scenario for liveness check - simple case
-            if (progressLoading.checkStep.smile === null) {
-                if (detectionData?.expressions?.happy < 0.25) {
-                    progressLoading.livenessCheck = "Đã phát hiện khuôn mặt, cười lên";
-                    progressLoading.checkStep.smile = 'checking';
+            if (challengeSimple.ekycStep.poseNose.isPass === false) {
+                progressLoading.livenessCheck = "Đưa mũi vào vị trí thử thách";
+                setProgressLoading({ ...progressLoading })
+            }
+            else {
+                if (challengeSimple.ekycStep.smiling === false) {
+                    progressLoading.livenessCheck = "Vui lòng mĩm cười";
                     setProgressLoading({ ...progressLoading })
                 }
                 else {
-                    progressLoading.livenessCheck = "Bắt đầu phiên xác thực ảnh mới, vui lòng không cười";
-                    progressLoading.checkStep.smile = null;
+                    progressLoading.livenessCheck = "";
                     setProgressLoading({ ...progressLoading })
-                }
-
-            }
-            else {
-                if (progressLoading.checkStep.smile === 'checking'
-                    && detectionData?.expressions?.happy >= 0.3) {
                     faceImages.forEach(cnv => {
-                        progressLoading.checkStep.smile = null;
-                        progressLoading.livenessCheck = "Đã chụp ảnh";
-                        setProgressLoading({ ...progressLoading })
                         setPreViewImageVideo(cnv.toDataURL());
                     })
                 }
@@ -330,11 +302,11 @@ function WebCamDetectComponent(props) {
                 </g>
                 <g id="three">
                     {
-                        isDetectFace ? <svg height="80%" width="80%">
+                        isDetectFace ? <svg height="80%" width="100%">
                             <text x="47%" y="4%" fill="green" fontSize={13}>{progressLoading.livenessCheck}</text>
                         </svg>
                             :
-                            <svg height="80%" width="80%">
+                            <svg height="80%" width="100%">
                                 <text x="47%" y="4%" fill="red" fontSize={13}>{progressLoading.valueError}</text>
                             </svg>
                     }
