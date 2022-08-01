@@ -61,7 +61,7 @@ function WebCamDetectComponent(props) {
             for (let i = 1; i < interval_id; i++) {
                 window.clearInterval(i);
             }
-            await JEELIZFACEFILTER?.destroy();
+            // await JEELIZFACEFILTER?.destroy();
             canvasRef.current = null;
             webcamRef.current = null;
         })
@@ -92,18 +92,18 @@ function WebCamDetectComponent(props) {
     const resolveToVal = val => new Promise(res =>
         setTimeout(() => res(val), Math.random() * 1000))
 
-    const initServiceJeelize = () => {
-        JEELIZFACEFILTER.get_videoDevices((data) => {
-            const deviceid = data[0]?.deviceId ?? null;
-            initHeadMotion('jeeFaceFilterCanvas', detectLeftRight, deviceid)
-            initThreejs(deviceid, threejsMaterial);
-        })
-    }
+    // const initServiceJeelize = () => {
+    //     JEELIZFACEFILTER.get_videoDevices((data) => {
+    //         const deviceid = data[0]?.deviceId ?? null;
+    //         initHeadMotion('jeeFaceFilterCanvas', detectLeftRight, deviceid)
+    //         initThreejs(deviceid, threejsMaterial);
+    //     })
+    // }
 
     const loadModels = () => {
         setLoading(true);
         Promise.all([
-            // faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
+            faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
             faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
             faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
             // faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
@@ -252,7 +252,7 @@ function WebCamDetectComponent(props) {
 
     async function extractFaceFromBox(inputImage, box) {
         const regionsToExtract = [
-            new faceapi.Rect(box.x, box.y - 120, box.width + 10, box.height + 120)
+            new faceapi.Rect(box.x-50, box.y - 120, box.width + 100, box.height + 120)
         ]
 
         let faceImages = await faceapi.extractFaces(inputImage, regionsToExtract)
@@ -262,7 +262,7 @@ function WebCamDetectComponent(props) {
         }
         else {
             if (challengeSimple.ekycStep.poseNose.isPass === false) {
-                progressLoading.livenessCheck = "Đưa mũi vào vị trí thử thách";
+                progressLoading.livenessCheck = "Đưa mũi vào vị trí khung màu vàng";
                 setProgressLoading({ ...progressLoading })
             }
             else {
@@ -306,11 +306,11 @@ function WebCamDetectComponent(props) {
                 <g id="three">
                     {
                         isDetectFace ? <svg height="80%" width="100%">
-                            <text x="40%" y="4%" fill="green" fontSize={13}>{progressLoading.livenessCheck}</text>
+                            <text x="35%" y="5%" fill="green" fontSize={16}>{progressLoading.livenessCheck}</text>
                         </svg>
                             :
                             <svg height="80%" width="100%">
-                                <text x="40%" y="4%" fill="red" fontSize={13}>{progressLoading.valueError}</text>
+                                <text x="35%" y="5%" fill="red" fontSize={16}>{progressLoading.valueError}</text>
                             </svg>
                     }
                 </g>
