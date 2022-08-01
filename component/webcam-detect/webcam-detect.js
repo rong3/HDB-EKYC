@@ -103,7 +103,7 @@ function WebCamDetectComponent(props) {
     const loadModels = () => {
         setLoading(true);
         Promise.all([
-            // faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
+            faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
             faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
             faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
             faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
@@ -135,7 +135,7 @@ function WebCamDetectComponent(props) {
             if (webcamRef.current) {
                 try {
                     const detections = await faceapi.detectSingleFace(webcamRef.current, new faceapi.TinyFaceDetectorOptions({
-                        scoreThreshold: 0.1
+                        scoreThreshold: 0.005
                     }))?.withFaceLandmarks()?.withFaceExpressions();
                     if (detections) {
                         threejsMaterial.debug.x = detections?.detection.box._x;
@@ -153,7 +153,7 @@ function WebCamDetectComponent(props) {
                         &&
                         (
                             detections.detection.box._y >= (webcamRef.current.videoHeight / 2.5) - 70
-                            && detections.detection.box._y < (webcamRef.current.videoHeight / 2.5) + 100
+                            && detections.detection.box._y < (webcamRef.current.videoHeight / 2.5) + 30
                         )
                     ) {
                         //Call this function to extract and display face
@@ -222,9 +222,9 @@ function WebCamDetectComponent(props) {
                             drawComponentFace(ctx, componentPoint.rightEyeBrow, 40, 20);
 
                             //drawing landmark
-                            // faceapi.draw.drawDetections(canvas, resizedDetections2)
+                            faceapi.draw.drawDetections(canvas, resizedDetections2)
                             // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections2)
-                            // faceapi.draw.drawFaceExpressions(canvas, resizedDetections2)
+                            //faceapi.draw.drawFaceExpressions(canvas, resizedDetections2)
 
                             //age detect
                             // resized?.forEach(result => {
